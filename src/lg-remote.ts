@@ -136,7 +136,7 @@ class LgRemoteControl extends LitElement {
         return html`
             <div class="card">
                 <div class="page" style="--remote-button-color: ${buttonColor}; --remote-text-color: ${textColor}; --remote-color: ${backgroundColor}; --remotewidth: ${remoteWidth};  --main-border-color: ${borderColor}; --main-border-width: ${borderWidth}">
-                    ${this.config.name ? html` <div class="tv_title" style="color:${tv_name_color}" >${this.config.name}</div> ` : ""}
+                    ${this.config.name ? html` <div class="title" style="color:${tv_name_color}" >${this.config.name}</div> ` : ""}
 
                     <div class="grid-container-power"  style="--remotewidth: ${remoteWidth}">
                         <button class="btn-flat flat-high ripple" @click=${() => this._channelList()}><ha-icon icon="mdi:format-list-numbered"/></button>
@@ -342,7 +342,6 @@ class LgRemoteControl extends LitElement {
     }
 
     updated(changedProperties) {
-
         if (changedProperties.has("hass")) {
             const tvEntity = this.hass.states[this.config.entity];
             const newSoundOutput = tvEntity.attributes.sound_output;

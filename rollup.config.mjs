@@ -34,7 +34,15 @@ const plugins = [
 
 export default [
     {
-        input: "src/lg-remote-control.ts",
+        input: "src/lg-remote.ts",
+        output: {
+            dir: "dist",
+            format: "es",
+        },
+        plugins: [...plugins],
+    },
+    {
+        input: "src/projector-remote.ts",
         output: {
             dir: "dist",
             format: "es",

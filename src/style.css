@@ -4,7 +4,7 @@
     }
 }
 
-.tv_title {
+.title {
     width: fit-content;
     /* alig: -webkit-center; */
     display: block;
@@ -116,6 +116,16 @@ button:focus {
 .grid-container-input {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: calc(var(--remotewidth)/2) calc(var(--remotewidth)/.5115);
+}
+
+.grid-container-volume-control {
+    display: flex;
+    background-color: transparent;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    width: var(--remotewidth);
+    height: calc(var(--remotewidth)/4);
+    overflow: hidden;
 }
 
 .grid-container-sound {
