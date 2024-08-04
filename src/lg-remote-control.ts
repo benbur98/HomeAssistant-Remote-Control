@@ -46,7 +46,7 @@ class LgRemoteControl extends LitElement {
     private output_entity: string;
     private valueDisplayTimeout: NodeJS.Timeout;
     private homeisLongPress: boolean = false;
-    private homelongPressTimer: any; // Tipo generico, ma puoi specificare il tipo corretto se lo conosci
+    private homelongPressTimer: any;
 
 
     static getConfigElement() {
@@ -84,7 +84,6 @@ class LgRemoteControl extends LitElement {
             _show_vol_text: {},
             volume_value: { type: Number, reflect: true },
             output_entity: { type: Number, reflect: true },
-
         };
     }
 
@@ -97,7 +96,6 @@ class LgRemoteControl extends LitElement {
         this._show_vol_text = false;
         this.volume_value = 0;
         this.soundOutput = "";
-
     }
 
     render() {
@@ -112,6 +110,7 @@ class LgRemoteControl extends LitElement {
         const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border: "var(--primary-text-color)";
         const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
         const textColor = this.config.colors && this.config.colors.text ? this.config.colors.text : "var(--primary-text-color)";
+
         const mac = this.config.mac;
 
         if (this.config.ampli_entity &&
@@ -120,9 +119,7 @@ class LgRemoteControl extends LitElement {
 
             this.volume_value = Math.round(this.hass.states[this.config.ampli_entity].attributes.volume_level * 100 * 2) / 2;
             this.output_entity = this.config.ampli_entity;
-
         } else {
-
             this.volume_value = Math.round(this.hass.states[this.config.entity].attributes.volume_level * 100);
             this.output_entity = this.config.entity;
         }
@@ -194,7 +191,7 @@ class LgRemoteControl extends LitElement {
                         ` : html`
 
                             ${this._show_keypad ? html`
-                                <!-- ################################ keypad ################################## -->
+                                <!-- ################################ KEYPAD ################################## -->
                                 <div class="grid-container-keypad">
                                     <button class="btn-keypad ripple" @click=${() => this._button("1")}>1</button>
                                     <button class="btn-keypad ripple" @click=${() => this._button("2")}>2</button>
@@ -209,7 +206,7 @@ class LgRemoteControl extends LitElement {
                                     <button class="btn-keypad ripple" @click=${() => this._button("0")}>0</button>
                                     <button class="btn-keypad"></button>
                                 </div>
-                                <!-- ################################# keypad end ############################## -->
+                                <!-- ################################# KEYPAD END ############################## -->
                             ` : html`
                                 <!-- ################################# DIRECTION PAD ################################# -->
                                 <div class="grid-container-cursor">
@@ -230,50 +227,12 @@ class LgRemoteControl extends LitElement {
                             `}
 
                         `}
-                        <!-- ################################# SOURCE BUTTONS ################################# -->
-                        ${this.config.sources ? html`
-                            <div class="grid-container-source">
-                                ${this.config.sources.map(source => {
-                                    return html`
-                                        <button class="btn_source ripple" @click=${() => this._select_source(source.name)}>
-                                            ${LgRemoteControl.getIcon(source.icon)}
-                                        </button>
-                                    `;
-                                })}
-                            </div>
-                        ` : html`
-                            <div class="grid-container-source">
-                                <button class="btn_source ripple" @click=${() => this._select_source("Netflix")}><ha-icon style="heigth: 70%; width: 70%;" icon="mdi:netflix"/></button>
-                                <button class="btn_source ripple" @click=${() => this._select_source("Prime Video")}>${amazonIcon()}</button>
-                                <button class="btn_source ripple" @click=${() => this._select_source("Disney+")}>${disneyIcon()}</button>
-                                <button class="btn_source ripple" @click=${() => this._select_source("DAZN")}>${daznIcon()}</button>
-                            </div>`}
-                        <!-- ################################# SOURCE BUTTONS END ################################# -->
-
-                        <!-- ################################# COLORED BUTTONS ################################# -->
-                        ${colorButtons ? html`
-                            <div class="grid-container-color_btn">
-                                <button class="btn-color ripple" style="background-color: red; height: calc(var(--remotewidth) / 12);" @click=${() => this._button("RED")}></button>
-                                <button class="btn-color ripple" style="background-color: green; height: calc(var(--remotewidth) / 12);" @click=${() => this._button("GREEN")}></button>
-                                <button class="btn-color ripple" style="background-color: yellow; height: calc(var(--remotewidth) / 12);" @click=${() => this._button("YELLOW")}></button>
-                                <button class="btn-color ripple" style="background-color: blue; height: calc(var(--remotewidth) / 12);" @click=${() => this._button("BLUE")}></button>
-                            </div>
-                        ` : html`
-                        `}
-                        <!-- ################################# COLORED BUTTONS END ################################# -->
 
                         <div class="grid-container-volume-channel-control" >
                             <button class="btn ripple" id="plusButton"  style="border-radius: 50% 50% 0px 0px; margin: 0px auto 0px auto; height: 100%;" }><ha-icon icon="mdi:plus"/></button>
                             <button class="btn-flat flat-high ripple" id="homeButton" style="margin-top: 0px; height: 50%;" @mousedown=${(e) => this._homeButtonDown(e)} @touchstart=${(e) => this._homeButtonDown(e)} @mouseup=${(e) => this._homeButtonUp(e)} @touchend=${(e) => this._homeButtonUp(e)}>
     <ha-icon icon="mdi:home"></ha-icon>
 </button>
-
-
-
-
-
-
-
 
                             <button class="btn ripple" style="border-radius: 50% 50% 0px 0px; margin: 0px auto 0px auto; height: 100%;" @click=${() => this._button("CHANNELUP")}><ha-icon icon="mdi:chevron-up"/></button>
                             <button class="btn" style="border-radius: 0px; cursor: default; margin: 0px auto 0px auto; height: 100%;"><ha-icon icon="${stateObj.attributes.is_volume_muted === true ? 'mdi:volume-off' : 'mdi:volume-high'}"/></button>
@@ -290,10 +249,31 @@ class LgRemoteControl extends LitElement {
                             <button class="btn-flat flat-low ripple"  @click=${() => this._command("PAUSE", "media.controls/pause")}><ha-icon icon="mdi:pause"/></button>
                             <button class="btn-flat flat-low ripple"  @click=${() => this._command("STOP", "media.controls/stop")}><ha-icon icon="mdi:stop"/></button>
                             <button class="btn-flat flat-low ripple"  @click=${() => this._command("REWIND", "media.controls/rewind")}><ha-icon icon="mdi:skip-backward"/></button>
-                            <button class="btn-flat flat-low ripple" style="color: red;" @click=${() => this._command("RECORD", "media.controls/Record")}><ha-icon icon="mdi:record"/></button>
+                            <button class="btn-flat_blank flat-low"> </button>
                             <button class="btn-flat flat-low ripple"  @click=${() => this._command("FAST_FOWARD", "media.controls/fastForward")}><ha-icon icon="mdi:skip-forward"/></button>
                         </div>
                         <!-- ################################# MEDIA CONTROL END ################################# -->
+
+                        <!-- ################################# SOURCE BUTTONS ################################# -->
+                        ${this.config.sources ? html`
+                            <div class="grid-container-source">
+                                ${this.config.sources.map(source => {
+                                    return html`
+                                        <button class="btn_source ripple" @click=${() => this._select_source(source.name)}>
+                                            ${LgRemoteControl.getIcon(source.icon)}
+                                        </button>
+                                    `;
+                                })}
+                            </div>
+                        ` : html`
+                            <div class="grid-container-source">
+                              <button class="btn_source ripple" @click=${() => this._select_source("Netflix")}><ha-icon style="heigth: 70%; width: 70%;" icon="mdi:netflix"/></button>
+                              <button class="btn_source ripple" @click=${() => this._select_source("Prime Video")}>${amazonIcon()}</button>
+                              <button class="btn_source ripple" @click=${() => this._select_source("Disney+")}>${disneyIcon()}</button>
+                              <button class="btn_source ripple" @click=${() => this._select_source("Youtube")}><ha-icon style="heigth: 70%; width: 70%;" icon="mdi:youtube"/></button>
+                            </div>`}
+                        <!-- ################################# SOURCE BUTTONS END ################################# -->
+
                         </div>
                     `}
                 </div>
@@ -321,21 +301,21 @@ class LgRemoteControl extends LitElement {
         this.ownerDocument.querySelector("home-assistant").dispatchEvent(popupEvent);
     }
 
-    _button(button) {
+    _button(button: string) {
         this.callServiceFromConfig(button, "webostv.button", {
             entity_id: this.config.entity,
             button: button
         })
     }
 
-    _command(button, command) {
+    _command(button: string, command: string) {
         this.callServiceFromConfig(button, "webostv.command", {
             entity_id: this.config.entity,
             command: command
         });
     }
 
-    _media_player_turn_on(mac) {
+    _media_player_turn_on(mac: string) {
         if (this.config.mac) {
             this.hass.callService("wake_on_lan", "send_magic_packet", {
                 mac: mac
@@ -345,7 +325,7 @@ class LgRemoteControl extends LitElement {
         }
     }
 
-    _media_player_service(button, service) {
+    _media_player_service(button: string, service: string) {
         this.callServiceFromConfig(button, `media_player.${service}`, {
             entity_id: this.config.entity,
         });
@@ -359,14 +339,12 @@ class LgRemoteControl extends LitElement {
         let longPressTimer;
         let isLongPress = false;
 
-        // Funzione per aggiornare e chiamare il servizio
         const updateValue = (service) => {
             this.callServiceFromConfig(service.toUpperCase(), `media_player.${service}`, {
                 entity_id: this.output_entity,
             });
         };
 
-        // Gestore per il pulsante '+' (plusButton)
         plusButton.addEventListener("mousedown", () => {
             if (!isNaN(this.volume_value)) {
                 isLongPress = false;
@@ -414,7 +392,6 @@ class LgRemoteControl extends LitElement {
             }, 500);
         });
 
-        // Gestore per il pulsante '-' (minusButton)
         minusButton.addEventListener("mousedown", () => {
             if (!isNaN(this.volume_value)) {
                 isLongPress = false;
@@ -470,8 +447,8 @@ class LgRemoteControl extends LitElement {
             const newSoundOutput = tvEntity.attributes.sound_output;
 
             if (newSoundOutput !== this.soundOutput) {
-                this.soundOutput = newSoundOutput; // Aggiorna il valore della variabile di classe
-                this.requestUpdate(); // Richiedi l'aggiornamento della card
+                this.soundOutput = newSoundOutput;
+                this.requestUpdate();
             }
         }
     }
@@ -481,7 +458,7 @@ class LgRemoteControl extends LitElement {
       this.homelongPressTimer = setTimeout(() => {
           this.homeisLongPress = true;
           this._button("MENU")
-      }, 1000); // Tempo in millisecondi per determinare una pressione prolungata
+      }, 1000);
   }
 
   _homeButtonUp(event: MouseEvent | TouchEvent) {
@@ -534,7 +511,7 @@ class LgRemoteControl extends LitElement {
 
     }
 
-    static getIcon(iconName) {
+    static getIcon(iconName: string) {
         return Object.keys(LgRemoteControl.iconMapping).includes(iconName)
             ? LgRemoteControl.iconMapping[iconName]
             : html`<ha-icon style="height: 70%; width: 70%;" icon="${iconName}"/>`;
