@@ -1,9 +1,9 @@
 // Create and register the card editor
+import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
-import { html, css, LitElement } from "lit";
 
-import { HomeAssistantFixed } from "./types";
 import { EDITOR_CARD_TAG_NAME } from "./const";
+import { HomeAssistantFixed } from "./types";
 import { getMediaPlayerEntitiesByPlatform } from "./utils";
 
 
@@ -196,7 +196,7 @@ class LgRemoteControlEditor extends LitElement {
             <br><br>
         `;
   }
-  
+
   selectMac(macValue) {
     macValue = macValue ?? '00:11:22:33:44:55';
     let heading = 'MAC Address:';
@@ -223,18 +223,18 @@ class LgRemoteControlEditor extends LitElement {
                 <input type="color" name="buttons" id="buttons"  .value="${config.colors && config.colors.buttons || ''}"
                        @input=${this.colorsConfigChanged}></input>
                 <ha-icon data-input-name="buttons" icon="mdi:trash-can-outline" @click=${this.colorsConfigChanged}></ha-icon>
- 
- 
+
+
                 <label class="color-item" for="text">Text Color:</label>
                 <input type="color" name="text" id="text"  .value="${config.colors && config.colors.text || ''}"
                        @input=${this.colorsConfigChanged}></input>
                        <ha-icon data-input-name="text" icon="mdi:trash-can-outline" @click=${this.colorsConfigChanged}></ha-icon>
- 
+
                 <label class="color-item" for="background">Background Color:</label>
                 <input type="color" name="background" id="background"  .value="${config.colors && config.colors.background || ''}"
                        @input=${this.colorsConfigChanged}></input>
                        <ha-icon data-input-name="background" icon="mdi:trash-can-outline" @click=${this.colorsConfigChanged}></ha-icon>
- 
+
                 <label class="color-item" for="border">Border color:</label>
                 <input type="color" name="border" id="border"  .value="${config.colors && config.colors.border || ''}"
                         @input=${this.colorsConfigChanged}></input>
@@ -291,7 +291,7 @@ class LgRemoteControlEditor extends LitElement {
     return html`
         <div>AV-Receiver config option:</div>
         <div style="display: flex;width: 40ch;align-items: center;">
-         <select 
+         <select
             name="av_receiver_family"
             id="av_receiver_family"
             class="select-item"
@@ -309,9 +309,9 @@ class LgRemoteControlEditor extends LitElement {
               `;})}
           </select>
           ${this._config.av_receiver_family && this._config.av_receiver_family != '' ? html`
-          <ha-icon 
+          <ha-icon
             style="padding-left: 0.8em;"
-            icon="mdi:trash-can-outline" 
+            icon="mdi:trash-can-outline"
             @click=${this._erase_av_receiver}
             @mouseover=${() => this.focus()}
           ></ha-icon>`
@@ -379,29 +379,29 @@ class LgRemoteControlEditor extends LitElement {
 
   static get styles() {
     return css`
- 
+
         .color-selector {
             display: grid;
             grid-template-columns: auto 8ch 3ch;
             width: 40ch;
         }
- 
+
         .color-item {
             padding: .6em;
             font-size: 1em;
         }
- 
+
         .heading {
             font-weight: bold;
         }
- 
+
         .select-item {
             background-color: var(--label-badge-text-color);
             width: 40ch;
-            padding: .6em; 
+            padding: .6em;
             font-size: 1em;
         }
- 
+
         `;
   }
 

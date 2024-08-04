@@ -1,11 +1,11 @@
+import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { HomeAssistant } from 'custom-card-helpers';
 
-import "./editor";
-import { lineOutIcon, amazonIcon, tvOpticIcon, daznIcon, disneyIcon, tvHeadphonesIcon, arcIcon, opticIcon, nowTvIcon } from "./icons";
-import { HomeAssistantFixed, WindowWithCards } from "./types";
 import { CARD_TAG_NAME, CARD_VERSION, EDITOR_CARD_TAG_NAME } from "./const";
+import "./editor";
+import { amazonIcon, arcIcon, disneyIcon, lineOutIcon, opticIcon, tvHeadphonesIcon, tvOpticIcon } from "./icons";
+import { HomeAssistantFixed, WindowWithCards } from "./types";
 import { getMediaPlayerEntitiesByPlatform } from "./utils";
 
 
@@ -69,8 +69,6 @@ class LgRemoteControl extends LitElement {
     static get iconMapping() {
         return {
             "disney": disneyIcon(),
-            "dazn": daznIcon(),
-            "nowtv": nowTvIcon(),
             "amazon": amazonIcon(),
         };
     }
@@ -86,7 +84,7 @@ class LgRemoteControl extends LitElement {
             _show_vol_text: {},
             volume_value: { type: Number, reflect: true },
             output_entity: { type: Number, reflect: true },
-            
+
         };
     }
 
@@ -269,10 +267,10 @@ class LgRemoteControl extends LitElement {
                             <button class="btn-flat flat-high ripple" id="homeButton" style="margin-top: 0px; height: 50%;" @mousedown=${(e) => this._homeButtonDown(e)} @touchstart=${(e) => this._homeButtonDown(e)} @mouseup=${(e) => this._homeButtonUp(e)} @touchend=${(e) => this._homeButtonUp(e)}>
     <ha-icon icon="mdi:home"></ha-icon>
 </button>
-                                                    
 
 
-                            
+
+
 
 
 
@@ -485,7 +483,7 @@ class LgRemoteControl extends LitElement {
           this._button("MENU")
       }, 1000); // Tempo in millisecondi per determinare una pressione prolungata
   }
-  
+
   _homeButtonUp(event: MouseEvent | TouchEvent) {
       clearTimeout(this.homelongPressTimer);
       if (!this.homeisLongPress) {
