@@ -34,17 +34,17 @@ const plugins = [
 
 export default [
     {
-        input: "src/lg-remote.ts",
+        input: "src/lg_tv/remote.ts",
         output: {
-            dir: "dist",
+            dir: "dist/lg_tv",
             format: "es",
         },
         plugins: [...plugins],
     },
     {
-        input: "src/projector-remote.ts",
+        input: "src/projector/remote.ts",
         output: {
-            dir: "dist",
+            dir: "dist/projector",
             format: "es",
         },
         plugins: [...plugins],

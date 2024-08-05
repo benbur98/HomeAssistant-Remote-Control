@@ -1,15 +1,12 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { WindowWithCards } from "./types";
+import { WindowWithCards } from "../types";
 
-import "./editor";
-
-import styles from './style.css';
+import styles from '../style.css';
 
 const line1 = '  Projector IR Remote Control Card  ';
-const line2 = `  version: 0.1  `;
-/* eslint no-console: 0 */
+const line2 = '  Version: 0.1  ';
 console.info(
   `%c${line1}\n%c${line2}`,
   'color: orange; font-weight: bold; background: black',

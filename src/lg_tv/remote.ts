@@ -2,25 +2,23 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import { CARD_TAG_NAME, CARD_VERSION, EDITOR_CARD_TAG_NAME } from "./const";
+import { HomeAssistantFixed, WindowWithCards } from "../types";
+import { getMediaPlayerEntitiesByPlatform } from "../utils";
 import "./editor";
-import { HomeAssistantFixed, WindowWithCards } from "./types";
-import { getMediaPlayerEntitiesByPlatform } from "./utils";
 
-import styles from './style.css';
+import styles from '../style.css';
 
-import { renderDirectionPad } from './elements/directionpad';
-import { renderKeypad } from './elements/keypad';
-import { renderMediaControls } from './elements/mediaControl';
-import { renderSound } from './elements/sound';
-import { renderSourceButtons } from './elements/sourceButtons';
-import { renderSources } from './elements/sources';
-import { amazonIcon, disneyIcon } from './icons';
+import { renderDirectionPad } from '../elements/directionpad';
+import { renderKeypad } from '../elements/keypad';
+import { renderMediaControls } from '../elements/mediaControl';
+import { renderSound } from '../elements/sound';
+import { renderSourceButtons } from '../elements/sourceButtons';
+import { renderSources } from '../elements/sources';
+import { amazonIcon, disneyIcon } from '../icons';
 
 
 const line1 = '  LG WebOS Remote Control Card  ';
-const line2 = `  version: ${CARD_VERSION}  `;
-/* eslint no-console: 0 */
+const line2 = `  Version: 0.1  `;
 console.info(
   `%c${line1}\n%c${line2}`,
   'color: orange; font-weight: bold; background: black',
@@ -32,7 +30,7 @@ console.info(
 const windowWithCards = window as unknown as WindowWithCards;
 windowWithCards.customCards = windowWithCards.customCards || [];
 windowWithCards.customCards.push({
-    type: CARD_TAG_NAME,
+    type: "lg-remote-control",
     name: "LG WebOS Remote Control Card",
     preview: true,
     description: "Remote control card for LG WebOS TV devices"
@@ -40,7 +38,7 @@ windowWithCards.customCards.push({
 
 
 
-@customElement(CARD_TAG_NAME)
+@customElement("lg-remote-control")
 class LgRemoteControl extends LitElement {
     static styles = css`${unsafeCSS(styles)}`;
 
@@ -60,7 +58,7 @@ class LgRemoteControl extends LitElement {
 
     static getConfigElement() {
         // Create and return an editor element
-        return document.createElement(EDITOR_CARD_TAG_NAME);
+        return document.createElement("lg-remote-control-editor");
     }
 
     public static getStubConfig(hass: HomeAssistantFixed) {
@@ -70,7 +68,7 @@ class LgRemoteControl extends LitElement {
         }
         const entity = entities.length > 0 ? entities[0] : "media_player.lg_webos_smart_tv";
         return {
-            "type": `custom:${CARD_TAG_NAME}`,
+            "type": 'custom:lg-remote-control',
             "entity": entity
         }
     }

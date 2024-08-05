@@ -2,48 +2,20 @@
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { EDITOR_CARD_TAG_NAME } from "./const";
-import { HomeAssistantFixed } from "./types";
-import { getMediaPlayerEntitiesByPlatform } from "./utils";
+import { HomeAssistantFixed } from "../types";
+import { getMediaPlayerEntitiesByPlatform } from "../utils";
 
 
 const avreceivers = {
-  "anthemav": {
-    "friendlyName": "Anthem A/V Receivers",
-  },
-  "arcam_fmj": {
-    "friendlyName": "Arcam FMJ Receivers",
-  },
-  "denonavr": {
-    "friendlyName": "Denon, Marantz A/V Receivers",
-  },
-  "heos": {
-    "friendlyName": "Denon heos A/V Receivers",
-  },
-  "harman_kardon_avr": {
-    "friendlyName": "Harman Kardon AVR",
-  },
-  "monoprice": {
-    "friendlyName": "Monoprice 6-Zone Amplifier",
-  },
-  "onkyo": {
-    "friendlyName": "Onkyo A/V Receivers",
-  },
   "sonos": {
     "friendlyName": "Sonos",
-  },
-  "pws66i": {
-    "friendlyName": "Soundavo WS66i 6-Zone Amplifier",
-  },
-  "yamaha": {
-    "friendlyName": "Yamaha Network Receivers",
   },
 }
 
 const AvReceiverdevicemap = new Map(Object.entries(avreceivers));
 
 
-@customElement(EDITOR_CARD_TAG_NAME)
+@customElement("lg-remote-control-editor")
 class LgRemoteControlEditor extends LitElement {
   private _config: any;
   private hass: HomeAssistantFixed;
@@ -85,7 +57,6 @@ class LgRemoteControlEditor extends LitElement {
     _config[inputName] = newValue;
     this._config = _config;
 
-    // Invia l'evento "config-changed"
     const event = new CustomEvent('config-changed', {
       detail: { config: _config },
       bubbles: true,
@@ -101,16 +72,13 @@ class LgRemoteControlEditor extends LitElement {
       if (inputName) {
         const inputElement = this.shadowRoot.querySelector(`[name="${inputName}"]`) as any;
         if (inputElement) {
-          // Imposta l'input su una stringa vuota
           inputElement.value = "";
 
-          // Aggiorna la configurazione
           const _config = Object.assign({}, this._config);
           _config["colors"] = { ...(_config["colors"] ?? {}) };
           _config["colors"][inputName] = "";
           this._config = _config;
 
-          // Invia l'evento "config-changed"
           const event = new CustomEvent("config-changed", {
             detail: { config: _config },
             bubbles: true,
@@ -120,13 +88,11 @@ class LgRemoteControlEditor extends LitElement {
         }
       }
     } else {
-      // Se l'evento non proviene da un'icona, gestisci la modifica dell'input come al solito
       const _config = Object.assign({}, this._config);
       _config["colors"] = { ...(_config["colors"] ?? {}) };
       _config["colors"][ev.target.name.toString()] = ev.target.value;
       this._config = _config;
 
-      // Invia l'evento "config-changed"
       const event = new CustomEvent("config-changed", {
         detail: { config: _config },
         bubbles: true,
@@ -137,11 +103,10 @@ class LgRemoteControlEditor extends LitElement {
   }
   _erase_av_receiver() {
     this._config.av_receiver_family = '';
-    this.requestUpdate(); // Aggiunta per forzare il render
+    this.requestUpdate();
   }
 
   dimensionsConfigChanged(ev) {
-    // Se l'evento non proviene da un'icona, gestisci la modifica dell'input come al solito
     const _config = Object.assign({}, this._config);
     _config["dimensions"] = { ...(_config["dimensions"] ?? {}) };
 
@@ -153,7 +118,6 @@ class LgRemoteControlEditor extends LitElement {
 
     this._config = _config;
 
-    // Invia l'evento "config-changed"
     const event = new CustomEvent("config-changed", {
       detail: { config: _config },
       bubbles: true,
@@ -246,7 +210,6 @@ class LgRemoteControlEditor extends LitElement {
   colorButtonsConfig(optionvalue) {
     let heading = 'Do you want to configure an AV-Receiver';
 
-    // Controlla se esiste una configurazione "color_buttons" e usa quel valore come opzione selezionata
     const selectedValue = this._config.color_buttons || 'false';
 
     return html`
@@ -342,7 +305,7 @@ class LgRemoteControlEditor extends LitElement {
                 <br><br>
             `;
     } else {
-      return html``; // Gestire il caso in cui `deviceFamily` non corrisponda a nessuna piattaforma
+      return html``;
     }
   }
 
@@ -364,16 +327,6 @@ class LgRemoteControlEditor extends LitElement {
       ${this.setDimensions(this._config.dimensions??{})}
       <br>
       <p>Other functionalities must be configured manually in code editor</p>
-      <p>references to <a href="https://github.com/madmicio/LG-WebOS-Remote-Control">https://github.com/madmicio/LG-WebOS-Remote-Control</a></p>
-      <div class="donations" style="display: flex">
-          <a href="https://www.buymeacoffee.com/madmicio" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-          <form action="https://www.paypal.com/donate" method="post" target="_top">
-          <input type="hidden" name="hosted_button_id" value="U5VQ9LHM82B7Q" />
-          <input type="image" src="https://pics.paypal.com/00/s/ODdjZjVlZjAtOWVmYS00NjQyLTkyZTUtNWQ3MmMzMmIxYTcx/file.PNG" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" style="height:60px;" />
-          <img alt="" border="0" src="https://www.paypal.com/en_IT/i/scr/pixel.gif" width="1" height="1" />
-          </form>
-
-      </div>
    `;
   }
 
