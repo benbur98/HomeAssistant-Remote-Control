@@ -34,7 +34,6 @@ class LgRemoteControlEditor extends LitElement {
 
   // This function is called when the input element of the editor loses focus or is changed
   configChanged(ev) {
-
     const _config = Object.assign({}, this._config);
     _config[ev.target.name.toString()] = ev.target.value;
     this._config = _config;
@@ -66,7 +65,6 @@ class LgRemoteControlEditor extends LitElement {
   }
 
   colorsConfigChanged(ev) {
-    // Controlla se l'evento è scatenato da un'icona
     if (ev.target.tagName === "HA-ICON") {
       const inputName = ev.target.getAttribute("data-input-name");
       if (inputName) {
@@ -101,6 +99,7 @@ class LgRemoteControlEditor extends LitElement {
       this.dispatchEvent(event);
     }
   }
+
   _erase_av_receiver() {
     this._config.av_receiver_family = '';
     this.requestUpdate();
@@ -125,12 +124,13 @@ class LgRemoteControlEditor extends LitElement {
     });
     this.dispatchEvent(event);
   }
-  getLgTvEntityDropdown(optionValue){
+
+  getLgTvEntityDropdown(optionValue) {
     let mediaPlayerEntities = getMediaPlayerEntitiesByPlatform(this.hass, 'webostv');
     let heading = 'LG Media Player Entity';
     let blankEntity = html``;
-    if(this._config.tventity == '' || !(mediaPlayerEntities).includes(optionValue)) {
-      blankEntity = html `<option value="" selected> - - - - </option> `;
+    if (this._config.tventity == '' || !(mediaPlayerEntities).includes(optionValue)) {
+      blankEntity = html`<option value="" selected> - - - - </option> `;
     }
     return html`
             ${heading}:<br>
@@ -151,21 +151,19 @@ class LgRemoteControlEditor extends LitElement {
             <br>`
   }
 
-  setRemoteName(remoteNameValue) {
-    let heading = 'Remote Control Name (option):';
+  setRemoteName(remoteNameValue: string) {
     return html`
-            ${heading}<br>
+            Title (optional)<br>
             <input type="text" name="name" id="name" style="width: 37.8ch;padding: .6em; font-size: 1em;" .value="${remoteNameValue}"
                    @input=${this.configChanged}
-            <br><br>
+            <br><br><br>
         `;
   }
 
-  selectMac(macValue) {
+  selectMac(macValue: string) {
     macValue = macValue ?? '00:11:22:33:44:55';
-    let heading = 'MAC Address:';
     return html`
-            ${heading}<br>
+            MAC Address:<br>
             <input type="text" name="mac" id="mac" style="width: 37.8ch;padding: .6em; font-size: 1em;" .value="${macValue}"
                    @focusout=${this.configChanged}
                    @change=${this.configChanged}>
@@ -174,14 +172,11 @@ class LgRemoteControlEditor extends LitElement {
   }
 
   selectColors(config) {
-    let heading = 'Colors Configuration';
-
     if (!config || !config.colors) {
       config = { colors: { buttons: '', text: '', background: '', border: '' } };
     }
-
     return html`
-            <div class="heading">${heading}:</div>
+            <div class="heading">Colors Configuration:</div>
             <div class="color-selector" class="title">
                 <label class="color-item" for="buttons" >Buttons Color:</label>
                 <input type="color" name="buttons" id="buttons"  .value="${config.colors && config.colors.buttons || ''}"
@@ -208,12 +203,10 @@ class LgRemoteControlEditor extends LitElement {
   }
 
   colorButtonsConfig(optionvalue) {
-    let heading = 'Do you want to configure an AV-Receiver';
-
     const selectedValue = this._config.color_buttons || 'false';
 
     return html`
-          <div>Color buttons config</div>
+          <div>Show Colour Buttons?</div>
           <select name="color_buttons" id="color_buttons" class="select-item"
                   .value="${selectedValue}"
                   @change=${this.configChangedBool}
@@ -226,14 +219,12 @@ class LgRemoteControlEditor extends LitElement {
   }
 
   setDimensions(dimensions) {
-    let heading = 'Dimensions';
-
-    const borderWidth = parseFloat(dimensions.border_width??"1");
+    const borderWidth = parseFloat(dimensions.border_width ?? "1");
 
     return html`
-          <div class="heading">${heading}:</div>
+          <div class="heading">Dimensions:</div>
           <br>
-          <label for="scale">Card Scale: ${dimensions.scale??1}</label><br>
+          <label for="scale">Card Scale: ${dimensions.scale ?? 1}</label><br>
           <input type="range" min="0.5" max="1.5" step="0.01" .value="${dimensions && dimensions.scale}" id="scale" name="scale" @input=${this.dimensionsConfigChanged} style="width: 40ch;">
           </input>
           <br>
@@ -249,10 +240,10 @@ class LgRemoteControlEditor extends LitElement {
   getDeviceAVReceiverDropdown(optionvalue) {
     const familykeys = [...AvReceiverdevicemap.keys()];
     const blankEntity = (!this._config.av_receiver_family || this._config.av_receiver_family === '')
-    ? html`<option value="" selected> - - - - </option>`
-    : '';
+      ? html`<option value="" selected> - - - - </option>`
+      : '';
     return html`
-        <div>AV-Receiver config option:</div>
+        <div>AV-Receiver config:</div>
         <div style="display: flex;width: 40ch;align-items: center;">
          <select
             name="av_receiver_family"
@@ -264,12 +255,13 @@ class LgRemoteControlEditor extends LitElement {
             @change=${this.configChanged}>
             ${blankEntity}
             ${familykeys.map((family) => {
-              const receiverData = AvReceiverdevicemap.get(family);
-              return html`
+      const receiverData = AvReceiverdevicemap.get(family);
+      return html`
                 <option value="${family}" ?selected=${optionvalue === family}>
                   ${receiverData.friendlyName}
                 </option>
-              `;})}
+              `;
+    })}
           </select>
           ${this._config.av_receiver_family && this._config.av_receiver_family != '' ? html`
           <ha-icon
@@ -278,7 +270,7 @@ class LgRemoteControlEditor extends LitElement {
             @click=${this._erase_av_receiver}
             @mouseover=${() => this.focus()}
           ></ha-icon>`
-          : ''}
+        : ''}
         </div>
         <br />
     `;
@@ -309,8 +301,6 @@ class LgRemoteControlEditor extends LitElement {
     }
   }
 
-
-
   render() {
     if (!this.hass || !this._config) {
       return html``;
@@ -324,7 +314,7 @@ class LgRemoteControlEditor extends LitElement {
       ${this.colorButtonsConfig(this._config)}
       ${this.getDeviceAVReceiverDropdown(this._config.av_receiver_family)}
       ${this.getMediaPlayerEntityDropdown(this._config.av_receiver_family)}
-      ${this.setDimensions(this._config.dimensions??{})}
+      ${this.setDimensions(this._config.dimensions ?? {})}
       <br>
       <p>Other functionalities must be configured manually in code editor</p>
    `;
@@ -332,7 +322,6 @@ class LgRemoteControlEditor extends LitElement {
 
   static get styles() {
     return css`
-
         .color-selector {
             display: grid;
             grid-template-columns: auto 8ch 3ch;
@@ -349,13 +338,11 @@ class LgRemoteControlEditor extends LitElement {
         }
 
         .select-item {
-            background-color: var(--label-badge-text-color);
             width: 40ch;
             padding: .6em;
             font-size: 1em;
         }
-
-        `;
+      `;
   }
 
 }

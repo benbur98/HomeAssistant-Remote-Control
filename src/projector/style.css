@@ -1,0 +1,19 @@
+.grid-container-power {
+    display: grid;
+    background-color: transparent;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    width: calc(var(--remotewidth)/3);
+    height: calc(var(--remotewidth)/3);
+    overflow: hidden;
+}
+
+.grid-container-volume-control {
+    display: flex;
+    background-color: transparent;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    width: var(--remotewidth);
+    height: calc(var(--remotewidth)/4);
+    overflow: hidden;
+}
