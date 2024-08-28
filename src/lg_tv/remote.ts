@@ -8,12 +8,12 @@ import "./editor";
 
 import styles from '../style.css';
 
-import { amazonIcon, arcIcon, disneyIcon, lineOutIcon, opticIcon, tvHeadphonesIcon, tvOpticIcon } from "../icons";
+import { amazonIcon, arcIcon, directionPad, disneyIcon, lineOutIcon, opticIcon, tvHeadphonesIcon, tvOpticIcon } from "../icons";
 
 const CARD_ELEMENT = "lg-remote-control";
 const CARD_NAME = "LG WebOS Remote Control";
 
-consoleCardDetails(CARD_NAME);
+consoleCardDetails(CARD_NAME, 1.0);
 
 addCustomCard(CARD_ELEMENT, CARD_NAME, "Remote control card for LG WebOS TVs");
 
@@ -77,21 +77,10 @@ class LgRemoteControl extends LitElement {
         this.soundOutput = "";
     }
 
-    renderPageOpeningDiv(backgroundColor: string, remoteWidth: string) {
-        const borderWidth = this.config.dimensions && this.config.dimensions.border_width ? this.config.dimensions.border_width : "1px";
-        const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border : "var(--primary-text-color)";
-        const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
-        const textColor = this.config.colors && this.config.colors.texts ? this.config.colors.texts : "var(--primary-text-color)";
-
-        return html`
-            <div class="page" style="--remote-button-color: ${buttonColor}; --remote-text-color: ${textColor}; --remote-color: ${backgroundColor}; --remotewidth: ${remoteWidth};  --main-border-color: ${borderColor}; --main-border-width: ${borderWidth}">
-        `;
-    }
-
     renderTitle() {
-        const tv_name_color = this.config.tv_name_color ? this.config.tv_name_color : "var(--primary-text-color)";
+        const title_color = this.config.tv_name_color ? this.config.tv_name_color : "var(--primary-text-color)";
 
-        return this.config.name ? html`<div class="title" style="color:${tv_name_color}">${this.config.name}</div>`: "";
+        return this.config.name ? html`<div class="title" style="color:${title_color}">${this.config.name}</div>` : "";
     }
 
     renderPowerButton(stateObj, remoteWidth: string, textColor: string) {
@@ -124,9 +113,9 @@ class LgRemoteControl extends LitElement {
                 <div class="grid-item-input">
                     ${stateObj.attributes.source_list.map(source => html`
                         <button class="${stateObj.attributes.source === source ? 'btn-input-on' : 'btn-input  ripple overlay'}" @click=${() => {
-                            this._select_source(source);
-                            this._show_inputs = false;
-                        }}>
+                this._select_source(source);
+                this._show_inputs = false;
+            }}>
                             ${source}
                         </button>
                     `)}
@@ -190,19 +179,19 @@ class LgRemoteControl extends LitElement {
     renderDirectionPad(backgroundColor: string) {
         return html`
             <div class="grid-container-cursor">
-                <div class="shape">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 79"><path d="m 30 15 a 10 10 0 0 1 20 0 a 15 15 0 0 0 15 15 a 10 10 0 0 1 0 20 a 15 15 0 0 0 -15 15 a 10 10 0 0 1 -20 0 a 15 15 0 0 0 -15 -15 a 10 10 0 0 1 0 -20 a 15 15 0 0 0 15 -15" fill="var(--remote-button-color)" stroke="#000000" stroke-width="0" /></svg>
-                </div>
+                ${directionPad()}
 
-                <button class="btn ripple item_sound" @click=${() => this._show_sound_output = true}><ha-icon icon="mdi:speaker"/></button>
-                <button class="btn ripple item_up" style="background-color: transparent;" @click=${() => this._button("UP")}><ha-icon icon="mdi:chevron-up"/></button>
-                <button class="btn ripple item_input" @click=${() => this._show_inputs = true}><ha-icon icon="mdi:import"/></button>
-                <button class="btn ripple item_2_sx" style="background-color: transparent;" @click=${() => this._button("LEFT")}><ha-icon icon="mdi:chevron-left"/></button>
-                <div class="ok_button ripple item_2_c" style="border: solid 2px ${backgroundColor}"  @click=${() => this._button("ENTER")}>${this._show_vol_text === true ? this.volume_value : 'OK'}</div>
-                <button class="btn ripple item_right" style="background-color: transparent;" @click=${() => this._button("RIGHT")}><ha-icon icon="mdi:chevron-right"/></button>
-                <button class="btn ripple item_back" @click=${() => this._button("BACK")}><ha-icon icon="mdi:undo-variant"/></button>
-                <button class="btn ripple item_down" style="background-color: transparent;" @click=${() => this._button("DOWN")}><ha-icon icon="mdi:chevron-down"/></button>
-                <button class="btn ripple item_exit" @click=${() => this._button("EXIT")}>EXIT</button>
+                <button class="btn ripple item_1a" @click=${() => this._show_sound_output = true}><ha-icon icon="mdi:speaker"/></button>
+                <button class="btn ripple item_1b" style="background-color: transparent;" @click=${() => this._button("UP")}><ha-icon icon="mdi:chevron-up"/></button>
+                <button class="btn ripple item_1c" @click=${() => this._show_inputs = true}><ha-icon icon="mdi:import"/></button>
+
+                <button class="btn ripple item_2a" style="background-color: transparent;" @click=${() => this._button("LEFT")}><ha-icon icon="mdi:chevron-left"/></button>
+                <div class="ok_button ripple item_2b" style="border: solid 2px ${backgroundColor}"  @click=${() => this._button("ENTER")}>${this._show_vol_text === true ? this.volume_value : 'OK'}</div>
+                <button class="btn ripple item_2c" style="background-color: transparent;" @click=${() => this._button("RIGHT")}><ha-icon icon="mdi:chevron-right"/></button>
+
+                <button class="btn ripple item_3a" @click=${() => this._button("BACK")}><ha-icon icon="mdi:undo-variant"/></button>
+                <button class="btn ripple item_3b" style="background-color: transparent;" @click=${() => this._button("DOWN")}><ha-icon icon="mdi:chevron-down"/></button>
+                <button class="btn ripple item_3c" @click=${() => this._button("EXIT")}>EXIT</button>
             </div>
         `;
     }
@@ -211,12 +200,12 @@ class LgRemoteControl extends LitElement {
         function renderConfigSources() {
             return html`
                 ${this.config.sources.map(source => {
-                    return html`
+                return html`
                         <button class="btn_source ripple" @click=${() => this._select_source(source.name)}>
                             ${LgRemoteControl.getIcon(source.icon)}
                         </button>
                     `;
-                })}
+            })}
             `;
         }
 
@@ -285,6 +274,9 @@ class LgRemoteControl extends LitElement {
 
         const backgroundColor = this.config.colors && this.config.colors.background ? this.config.colors.background : "var( --ha-card-background, var(--card-background-color, white) )";
         const textColor = this.config.colors && this.config.colors.text ? this.config.colors.text : "var(--primary-text-color)";
+        const borderWidth = this.config.dimensions && this.config.dimensions.border_width ? this.config.dimensions.border_width : "1px";
+        const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border : "var(--primary-text-color)";
+        const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
 
         if (this.config.ampli_entity &&
             (this.hass.states[this.config.entity].attributes.sound_output === 'external_arc' ||
@@ -299,7 +291,7 @@ class LgRemoteControl extends LitElement {
 
         return html`
             <div class="card">
-                ${this.renderPageOpeningDiv(backgroundColor, remoteWidth)}
+                <div class="page" style="--remote-button-color: ${buttonColor}; --remote-text-color: ${textColor}; --remote-color: ${backgroundColor}; --remotewidth: ${remoteWidth};  --main-border-color: ${borderColor}; --main-border-width: ${borderWidth}">
                     ${this.renderTitle()}
 
                     ${this.renderPowerButton(stateObj, remoteWidth, textColor)}

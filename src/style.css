@@ -95,7 +95,7 @@ button:focus {
 .grid-container-cursor {
   grid-template-rows: 1fr 1fr 1fr;
   width: var(--remotewidth);
-  grid-template-areas: "sound up input" "left ok right" "back down exit";
+  grid-template-areas: "top-left top-middle top-right" "middle-left middle-middle middle-right" "bottom-left bottom-middle bottom-right";
 }
 
 .grid-container-keypad {
@@ -272,40 +272,40 @@ button:focus {
   grid-area: bluetooth;
 }
 
-.item_sound {
-  grid-area: sound;
+.item_1a {
+  grid-area: top-left;
 }
 
-.item_up {
-  grid-area: up;
+.item_1b {
+  grid-area: top-middle;
 }
 
-.item_input {
-  grid-area: input;
+.item_1c {
+  grid-area: top-right;
 }
 
-.item_2_sx {
-  grid-area: left;
+.item_2a {
+  grid-area: middle-left;
 }
 
-.item_2_c {
-  grid-area: ok;
+.item_2b {
+  grid-area: middle-middle;
 }
 
-.item_right {
-  grid-area: right;
+.item_2c {
+  grid-area: middle-right;
 }
 
-.item_back {
-  grid-area: back;
+.item_3a {
+  grid-area: bottom-left;
 }
 
-.item_down {
-  grid-area: down;
+.item_3b {
+  grid-area: bottom-middle;
 }
 
-.item_exit {
-  grid-area: exit;
+.item_3c {
+  grid-area: bottom-right;
 }
 
 ha-icon {

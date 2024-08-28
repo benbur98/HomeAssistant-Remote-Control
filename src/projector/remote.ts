@@ -2,6 +2,7 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
+import { directionPad } from '../icons';
 import styles from '../style.css';
 import { addCustomCard, consoleCardDetails } from '../utils';
 import overrideStyles from './style.css';
@@ -9,7 +10,7 @@ import overrideStyles from './style.css';
 const CARD_ELEMENT = "projector-remote-control";
 const CARD_NAME = "Projector IR Remote Control";
 
-consoleCardDetails(CARD_NAME);
+consoleCardDetails(CARD_NAME, 1.0);
 
 addCustomCard(CARD_ELEMENT, CARD_NAME, "Remote control card for IR Projector");
 
@@ -31,19 +32,8 @@ class ProjectorRemoteControl extends LitElement {
         };
     }
 
-    renderPageOpeningDiv(backgroundColor: string, remoteWidth: string) {
-        const borderWidth = this.config.dimensions && this.config.dimensions.border_width ? this.config.dimensions.border_width : "1px";
-        const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border : "var(--primary-text-color)";
-        const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
-        const textColor = this.config.colors && this.config.colors.texts ? this.config.colors.texts : "var(--primary-text-color)";
-
-        return html`
-            <div class="page" style="--remote-button-color: ${buttonColor}; --remote-text-color: ${textColor}; --remote-color: ${backgroundColor}; --remotewidth: ${remoteWidth};  --main-border-color: ${borderColor}; --main-border-width: ${borderWidth}">
-        `;
-    }
-
     renderTitle() {
-        return this.config.name ? html`<div class="title" style="color:var(--primary-text-color)" >${this.config.name}</div>` : html``;
+        return this.config.name ? html`<div class="title" style="color:var(--primary-text-color)">${this.config.name}</div>` : "";
     }
 
     renderPowerButton(remoteWidth: string) {
@@ -54,26 +44,22 @@ class ProjectorRemoteControl extends LitElement {
         `;
     }
 
-    renderCursor(backgroundColor: string) {
+    renderDirectionPad(backgroundColor: string) {
         return html`
             <div class="grid-container-cursor">
-                <div class="shape">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 79">
-                        <path d="m 30 15 a 10 10 0 0 1 20 0 a 15 15 0 0 0 15 15 a 10 10 0 0 1 0 20 a 15 15 0 0 0 -15 15 a 10 10 0 0 1 -20 0 a 15 15 0 0 0 -15 -15 a 10 10 0 0 1 0 -20 a 15 15 0 0 0 15 -15" fill="var(--remote-button-color)" stroke="#000000" stroke-width="0" />
-                    </svg>
-                </div>
+                ${directionPad()}
 
-                <button class="btn ripple item_menu" @click=${() => this._button("menu")}><ha-icon icon="mdi:menu"/></button>
-                <button class="btn ripple item_up" style="background-color: transparent;" @click=${() => this._button("up")}><ha-icon icon="mdi:chevron-up"/></button>
-                <button class="btn ripple item_input" @click=${() => this._button("source")}><ha-icon icon="mdi:import"/></button>
-                <button class="btn ripple item_2_sx" style="background-color: transparent;" @click=${() => this._button("left")}><ha-icon icon="mdi:chevron-left"/></button>
+                <button class="btn ripple item_1a" @click=${() => this._button("menu")}><ha-icon icon="mdi:menu"/></button>
+                <button class="btn ripple item_1b" style="background-color: transparent;" @click=${() => this._button("up")}><ha-icon icon="mdi:chevron-up"/></button>
+                <button class="btn ripple item_1c" @click=${() => this._button("source")}><ha-icon icon="mdi:import"/></button>
 
-                <div class="ok_button ripple item_2_c" style="border: solid 2px ${backgroundColor}"  @click=${() => this._button("select")}>'OK'</div>
+                <button class="btn ripple item_2a" style="background-color: transparent;" @click=${() => this._button("left")}><ha-icon icon="mdi:chevron-left"/></button>
+                <div class="ok_button ripple item_2b" style="border: solid 2px ${backgroundColor}"  @click=${() => this._button("select")}>'OK'</div>
+                <button class="btn ripple item_2c" style="background-color: transparent;" @click=${() => this._button("right")}><ha-icon icon="mdi:chevron-right"/></button>
 
-                <button class="btn ripple item_right" style="background-color: transparent;" @click=${() => this._button("right")}><ha-icon icon="mdi:chevron-right"/></button>
-                <button class="btn ripple item_back" @click=${() => this._button("back")}><ha-icon icon="mdi:undo-variant"/></button>
-                <button class="btn ripple item_down" style="background-color: transparent;" @click=${() => this._button("down")}><ha-icon icon="mdi:chevron-down"/></button>
-                <button class="btn ripple item_mute" @click=${() => this._button("mute")}><ha-icon icon="mdi:volume-mute"/></button>
+                <button class="btn ripple item_3a" @click=${() => this._button("back")}><ha-icon icon="mdi:undo-variant"/></button>
+                <button class="btn ripple item_3b" style="background-color: transparent;" @click=${() => this._button("down")}><ha-icon icon="mdi:chevron-down"/></button>
+                <button class="btn ripple item_3c" @click=${() => this._button("mute")}><ha-icon icon="mdi:volume-mute"/></button>
             </div>
         `;
     }
@@ -93,15 +79,19 @@ class ProjectorRemoteControl extends LitElement {
         const remoteWidth = Math.round(scale * 260) + "px";
 
         const backgroundColor = this.config.colors && this.config.colors.background ? this.config.colors.background : "var( --ha-card-background, var(--card-background-color, white) )";
+        const borderWidth = this.config.dimensions && this.config.dimensions.border_width ? this.config.dimensions.border_width : "1px";
+        const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border : "var(--primary-text-color)";
+        const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
+        const textColor = this.config.colors && this.config.colors.texts ? this.config.colors.texts : "var(--primary-text-color)";
 
         return html`
             <div class="card">
-                ${this.renderPageOpeningDiv(backgroundColor, remoteWidth)}
+                <div class="page" style="--remote-button-color: ${buttonColor}; --remote-text-color: ${textColor}; --remote-color: ${backgroundColor}; --remotewidth: ${remoteWidth};  --main-border-color: ${borderColor}; --main-border-width: ${borderWidth}">
                     ${this.renderTitle()}
 
                     ${this.renderPowerButton(remoteWidth)}
 
-                    ${this.renderCursor(backgroundColor)}
+                    ${this.renderDirectionPad(backgroundColor)}
 
                     ${this.renderVolumeControl()}
                 </div>

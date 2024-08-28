@@ -207,6 +207,17 @@ export function lineOutIcon() {
               c-7.6,14.4-12.7,48.4-12.7,88.3c0,62.8,0,63.7,21.2,63.7c32.3,0,71.3,22.9,76.4,45c2.5,10.2,5.1,53.5,6.8,95.1
               c1.7,72.2,2.5,76.4,21.2,79c18.7,2.5,18.7,5.1,18.7,121.4v118h-191h-191V1077.7z"/>
               </g>
-              </svg>
+    </svg>
+  `;
+}
+
+
+export function directionPad() {
+  return html`
+    <div class="shape">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 79">
+          <path d="m 30 15 a 10 10 0 0 1 20 0 a 15 15 0 0 0 15 15 a 10 10 0 0 1 0 20 a 15 15 0 0 0 -15 15 a 10 10 0 0 1 -20 0 a 15 15 0 0 0 -15 -15 a 10 10 0 0 1 0 -20 a 15 15 0 0 0 15 -15" fill="var(--remote-button-color)" stroke="#000000" stroke-width="0" />
+      </svg>
+    </div>
   `;
 }

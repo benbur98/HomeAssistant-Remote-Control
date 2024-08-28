@@ -10,10 +10,11 @@ export function getMediaPlayerEntitiesByPlatform(hass: HomeAssistantFixed, platf
 
 
 /* Log the given Card Title to the console */
-export function consoleCardDetails(cardTitle: string) {
-  const line = `  ${cardTitle} Card  `;
+export function consoleCardDetails(cardTitle: string, version: Number) {
+  const titleString = `  ${cardTitle} Card  `;
+  const versionString = `  version: ${version}  `;
   console.info(
-    `%c${line}`,
+    `%c${titleString}\n%c${versionString}`,
     'color: orange; font-weight: bold; background: black',
     'color: white; font-weight: bold; background: dimgray',
   );
