@@ -1,33 +1,20 @@
 import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { WindowWithCards } from "../types";
 
 import styles from '../style.css';
+import { addCustomCard, consoleCardDetails } from '../utils';
 import overrideStyles from './style.css';
 
-const line1 = '  Projector IR Remote Control Card  ';
-const line2 = '  Version: 0.1  ';
-console.info(
-    `%c${line1}\n%c${line2}`,
-    'color: orange; font-weight: bold; background: black',
-    'color: white; font-weight: bold; background: dimgray',
-);
+const CARD_ELEMENT = "projector-remote-control";
+const CARD_NAME = "Projector IR Remote Control";
+
+consoleCardDetails(CARD_NAME);
+
+addCustomCard(CARD_ELEMENT, CARD_NAME, "Remote control card for IR Projector");
 
 
-// Allow this card to appear in the card chooser menu
-const windowWithCards = window as unknown as WindowWithCards;
-windowWithCards.customCards = windowWithCards.customCards || [];
-windowWithCards.customCards.push({
-    type: "projector-remote-control",
-    name: "Projector IR Remote Control Card",
-    preview: true,
-    description: "Remote control card for IR Projector"
-});
-
-
-
-@customElement("projector-remote-control")
+@customElement(CARD_ELEMENT)
 class ProjectorRemoteControl extends LitElement {
     static styles = [
         css`${unsafeCSS(styles)}`,
@@ -44,7 +31,7 @@ class ProjectorRemoteControl extends LitElement {
         };
     }
 
-    renderPage(backgroundColor: string, remoteWidth) {
+    renderPageOpeningDiv(backgroundColor: string, remoteWidth: string) {
         const borderWidth = this.config.dimensions && this.config.dimensions.border_width ? this.config.dimensions.border_width : "1px";
         const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border : "var(--primary-text-color)";
         const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
@@ -59,7 +46,7 @@ class ProjectorRemoteControl extends LitElement {
         return this.config.name ? html`<div class="title" style="color:var(--primary-text-color)" >${this.config.name}</div>` : html``;
     }
 
-    renderPowerButton(remoteWidth) {
+    renderPowerButton(remoteWidth: string) {
         return html`
             <div class="grid-container-power"  style="--remotewidth: ${remoteWidth}">
                 <button class="btn ripple" @click=${() => this._button("power")}><ha-icon icon="mdi:power" style="color: red;"/></button>
@@ -109,14 +96,15 @@ class ProjectorRemoteControl extends LitElement {
 
         return html`
             <div class="card">
-                ${this.renderPage(backgroundColor, remoteWidth)}
-                ${this.renderTitle()}
+                ${this.renderPageOpeningDiv(backgroundColor, remoteWidth)}
+                    ${this.renderTitle()}
 
-                ${this.renderPowerButton(remoteWidth)}
+                    ${this.renderPowerButton(remoteWidth)}
 
-                ${this.renderCursor(backgroundColor)}
+                    ${this.renderCursor(backgroundColor)}
 
-                ${this.renderVolumeControl()}
+                    ${this.renderVolumeControl()}
+                </div>
             </div>
         `;
     }
@@ -143,7 +131,7 @@ class ProjectorRemoteControl extends LitElement {
         );
     }
 
-    setConfig(config) {
+    setConfig(config: any) {
         this.config = config;
     }
 

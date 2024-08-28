@@ -5,6 +5,7 @@ import { customElement } from "lit/decorators.js";
 import { HomeAssistantFixed } from "../types";
 import { getMediaPlayerEntitiesByPlatform } from "../utils";
 
+const EDITOR_ELEMENT = "lg-remote-control-editor";
 
 const avreceivers = {
   "sonos": {
@@ -15,7 +16,7 @@ const avreceivers = {
 const AvReceiverdevicemap = new Map(Object.entries(avreceivers));
 
 
-@customElement("lg-remote-control-editor")
+@customElement(EDITOR_ELEMENT)
 class LgRemoteControlEditor extends LitElement {
   private _config: any;
   private hass: HomeAssistantFixed;

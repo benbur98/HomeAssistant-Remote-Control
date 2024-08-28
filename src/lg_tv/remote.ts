@@ -2,36 +2,23 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { css, html, LitElement, unsafeCSS } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-import { HomeAssistantFixed, WindowWithCards } from "../types";
-import { getMediaPlayerEntitiesByPlatform } from "../utils";
+import { HomeAssistantFixed } from "../types";
+import { addCustomCard, consoleCardDetails, getMediaPlayerEntitiesByPlatform } from "../utils";
 import "./editor";
 
 import styles from '../style.css';
 
 import { amazonIcon, arcIcon, disneyIcon, lineOutIcon, opticIcon, tvHeadphonesIcon, tvOpticIcon } from "../icons";
 
-const line1 = '  LG WebOS Remote Control Card  ';
-const line2 = `  Version: 0.1  `;
-console.info(
-    `%c${line1}\n%c${line2}`,
-    'color: orange; font-weight: bold; background: black',
-    'color: white; font-weight: bold; background: dimgray',
-);
+const CARD_ELEMENT = "lg-remote-control";
+const CARD_NAME = "LG WebOS Remote Control";
+
+consoleCardDetails(CARD_NAME);
+
+addCustomCard(CARD_ELEMENT, CARD_NAME, "Remote control card for LG WebOS TVs");
 
 
-// Allow this card to appear in the card chooser menu
-const windowWithCards = window as unknown as WindowWithCards;
-windowWithCards.customCards = windowWithCards.customCards || [];
-windowWithCards.customCards.push({
-    type: "lg-remote-control",
-    name: "LG WebOS Remote Control Card",
-    preview: true,
-    description: "Remote control card for LG WebOS TV devices"
-});
-
-
-
-@customElement("lg-remote-control")
+@customElement(CARD_ELEMENT)
 class LgRemoteControl extends LitElement {
     static styles = css`${unsafeCSS(styles)}`;
 
@@ -50,7 +37,6 @@ class LgRemoteControl extends LitElement {
     private homelongPressTimer: any;
 
     static getConfigElement() {
-        // Create and return an editor element
         return document.createElement("lg-remote-control-editor");
     }
 
@@ -91,7 +77,7 @@ class LgRemoteControl extends LitElement {
         this.soundOutput = "";
     }
 
-    renderPage(backgroundColor: string, remoteWidth) {
+    renderPageOpeningDiv(backgroundColor: string, remoteWidth: string) {
         const borderWidth = this.config.dimensions && this.config.dimensions.border_width ? this.config.dimensions.border_width : "1px";
         const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border : "var(--primary-text-color)";
         const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
@@ -105,10 +91,10 @@ class LgRemoteControl extends LitElement {
     renderTitle() {
         const tv_name_color = this.config.tv_name_color ? this.config.tv_name_color : "var(--primary-text-color)";
 
-        return this.config.name ? html`<div class="title" style="color:${tv_name_color}" >${this.config.name}</div>`: "";
+        return this.config.name ? html`<div class="title" style="color:${tv_name_color}">${this.config.name}</div>`: "";
     }
 
-    renderPowerButton(stateObj, remoteWidth, textColor: string) {
+    renderPowerButton(stateObj, remoteWidth: string, textColor: string) {
         return html`
             <div class="grid-container-power"  style="--remotewidth: ${remoteWidth}">
                 <button class="btn-flat flat-high ripple" @click=${() => this._channelList()}><ha-icon icon="mdi:format-list-numbered"/></button>
@@ -313,24 +299,25 @@ class LgRemoteControl extends LitElement {
 
         return html`
             <div class="card">
-                ${this.renderPage(backgroundColor, remoteWidth)}
-                ${this.renderTitle()}
+                ${this.renderPageOpeningDiv(backgroundColor, remoteWidth)}
+                    ${this.renderTitle()}
 
-                ${this.renderPowerButton(stateObj, remoteWidth, textColor)}
+                    ${this.renderPowerButton(stateObj, remoteWidth, textColor)}
 
-                ${this._show_inputs ? this.renderSources(stateObj) : html`
-                    ${this._show_sound_output ? this.renderSound(stateObj) : html`
-                        ${this._show_keypad ? this.renderKeypad() : this.renderDirectionPad(backgroundColor)}
-                    `}
+                    ${this._show_inputs ? this.renderSources(stateObj) : html`
+                        ${this._show_sound_output ? this.renderSound(stateObj) : html`
+                            ${this._show_keypad ? this.renderKeypad() : this.renderDirectionPad(backgroundColor)}
+                        `}
 
-                    ${this.renderSourceButtons()}
+                        ${this.renderSourceButtons()}
 
-                    ${this.renderColorButtons()}
+                        ${this.renderColorButtons()}
 
-                    ${this.renderVolumeChannelControl(stateObj)}
+                        ${this.renderVolumeChannelControl(stateObj)}
 
-                    ${this.renderMediaControl()}
-                </div>`}
+                        ${this.renderMediaControl()}
+                    </div>`}
+                </div>
             </div>
         `;
     }
@@ -537,17 +524,6 @@ class LgRemoteControl extends LitElement {
         this._show_sound_output = false;
     }
 
-    setConfig(config) {
-        if (!config.entity) {
-            throw new Error("Invalid configuration");
-        }
-        this.config = config;
-    }
-
-    getCardSize() {
-        return 15;
-    }
-
     callServiceFromConfig(key: string, service: string, serviceData: Record<string, any>) {
         let serviceToUse = service;
         let serviceDataToUse = serviceData;
@@ -561,6 +537,13 @@ class LgRemoteControl extends LitElement {
             serviceToUse.split(".")[1],
             serviceDataToUse
         );
+    }
+
+    setConfig(config) {
+        if (!config.entity) {
+            throw new Error("Invalid configuration");
+        }
+        this.config = config;
     }
 
     sourceButtons() {
@@ -584,5 +567,9 @@ class LgRemoteControl extends LitElement {
             "disney": disneyIcon(),
             "amazon": amazonIcon(),
         };
+    }
+
+    getCardSize() {
+        return 15;
     }
 }
