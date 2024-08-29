@@ -8,7 +8,9 @@ import "./editor";
 
 import styles from '../style.css';
 
+import { buildColorConfig, buildDimensionConfig, calculateRemoteWidth } from '../config';
 import { amazonIcon, arcIcon, directionPad, disneyIcon, lineOutIcon, opticIcon, tvHeadphonesIcon, tvOpticIcon } from "../icons";
+import { LgTvConfig } from './config';
 
 const CARD_ELEMENT = "lg-remote-control";
 const CARD_NAME = "LG WebOS Remote Control";
@@ -23,7 +25,7 @@ class LgRemoteControl extends LitElement {
     static styles = css`${unsafeCSS(styles)}`;
 
     public hass!: HomeAssistant;
-    public config!: any;
+    public config!: LgTvConfig;
     private _show_inputs: boolean;
     private _show_sound_output: boolean;
     private _show_text: boolean;
@@ -78,18 +80,16 @@ class LgRemoteControl extends LitElement {
     }
 
     renderTitle() {
-        const title_color = this.config.tv_name_color ? this.config.tv_name_color : "var(--primary-text-color)";
-
-        return this.config.name ? html`<div class="title" style="color:${title_color}">${this.config.name}</div>` : "";
+        return this.config.name ? html`<div class="title" style="color:${this.config.title_color}">${this.config.name}</div>` : "";
     }
 
-    renderPowerButton(stateObj, remoteWidth: string, textColor: string) {
+    renderPowerButton(stateObj) {
         return html`
-            <div class="grid-container-power"  style="--remotewidth: ${remoteWidth}">
+            <div class="grid-container-power"  style="--remotewidth: ${this.config.remoteWidth}">
                 <button class="btn-flat flat-high ripple" @click=${() => this._channelList()}><ha-icon icon="mdi:format-list-numbered"/></button>
 
                 ${stateObj.state === 'off' ? html`
-                    <button class="btn ripple" @click=${() => this._media_player_turn_on(this.config.mac)}><ha-icon icon="mdi:power" style="color: ${textColor};"/></button>
+                    <button class="btn ripple" @click=${() => this._media_player_turn_on(this.config.mac)}><ha-icon icon="mdi:power" style="color: ${this.config.colors.texts};"/></button>
                 ` : html`
                     <button class="btn ripple" @click=${() => this._media_player_service("POWER", "turn_off")}><ha-icon icon="mdi:power" style="color: red;"/></button>
                 `}
@@ -176,7 +176,7 @@ class LgRemoteControl extends LitElement {
         `;
     }
 
-    renderDirectionPad(backgroundColor: string) {
+    renderDirectionPad() {
         return html`
             <div class="grid-container-cursor">
                 ${directionPad()}
@@ -186,7 +186,7 @@ class LgRemoteControl extends LitElement {
                 <button class="btn ripple item_1c" @click=${() => this._show_inputs = true}><ha-icon icon="mdi:import"/></button>
 
                 <button class="btn ripple item_2a" style="background-color: transparent;" @click=${() => this._button("LEFT")}><ha-icon icon="mdi:chevron-left"/></button>
-                <div class="ok_button ripple item_2b" style="border: solid 2px ${backgroundColor}"  @click=${() => this._button("ENTER")}>${this._show_vol_text === true ? this.volume_value : 'OK'}</div>
+                <div class="ok_button ripple item_2b" style="border: solid 2px ${this.config.colors.background}"  @click=${() => this._button("ENTER")}>${this._show_vol_text === true ? this.volume_value : 'OK'}</div>
                 <button class="btn ripple item_2c" style="background-color: transparent;" @click=${() => this._button("RIGHT")}><ha-icon icon="mdi:chevron-right"/></button>
 
                 <button class="btn ripple item_3a" @click=${() => this._button("BACK")}><ha-icon icon="mdi:undo-variant"/></button>
@@ -269,15 +269,6 @@ class LgRemoteControl extends LitElement {
     render() {
         const stateObj = this.hass.states[this.config.entity];
 
-        const scale = this.config.dimensions && this.config.dimensions.scale ? this.config.dimensions.scale : 1;
-        const remoteWidth = Math.round(scale * 260) + "px";
-
-        const backgroundColor = this.config.colors && this.config.colors.background ? this.config.colors.background : "var( --ha-card-background, var(--card-background-color, white) )";
-        const textColor = this.config.colors && this.config.colors.text ? this.config.colors.text : "var(--primary-text-color)";
-        const borderWidth = this.config.dimensions && this.config.dimensions.border_width ? this.config.dimensions.border_width : "1px";
-        const borderColor = this.config.colors && this.config.colors.border ? this.config.colors.border : "var(--primary-text-color)";
-        const buttonColor = this.config.colors && this.config.colors.buttons ? this.config.colors.buttons : "var(--secondary-background-color)";
-
         if (this.config.ampli_entity &&
             (this.hass.states[this.config.entity].attributes.sound_output === 'external_arc' ||
                 this.hass.states[this.config.entity].attributes.sound_output === 'external_optical')) {
@@ -291,14 +282,14 @@ class LgRemoteControl extends LitElement {
 
         return html`
             <div class="card">
-                <div class="page" style="--remote-button-color: ${buttonColor}; --remote-text-color: ${textColor}; --remote-color: ${backgroundColor}; --remotewidth: ${remoteWidth};  --main-border-color: ${borderColor}; --main-border-width: ${borderWidth}">
+                <div class="page" style="--remote-button-color: ${this.config.colors.buttons}; --remote-text-color: ${this.config.colors.texts}; --remote-color: ${this.config.colors.background}; --remotewidth: ${this.config.remoteWidth};  --main-border-color: ${this.config.colors.border}; --main-border-width: ${this.config.dimensions.border_width}">
                     ${this.renderTitle()}
 
-                    ${this.renderPowerButton(stateObj, remoteWidth, textColor)}
+                    ${this.renderPowerButton(stateObj)}
 
                     ${this._show_inputs ? this.renderSources(stateObj) : html`
                         ${this._show_sound_output ? this.renderSound(stateObj) : html`
-                            ${this._show_keypad ? this.renderKeypad() : this.renderDirectionPad(backgroundColor)}
+                            ${this._show_keypad ? this.renderKeypad() : this.renderDirectionPad()}
                         `}
 
                         ${this.renderSourceButtons()}
@@ -501,7 +492,7 @@ class LgRemoteControl extends LitElement {
     }
 
 
-    _select_source(source) {
+    _select_source(source: string) {
         this.hass.callService("media_player", "select_source", {
             entity_id: this.config.entity,
             source: source
@@ -517,13 +508,9 @@ class LgRemoteControl extends LitElement {
     }
 
     callServiceFromConfig(key: string, service: string, serviceData: Record<string, any>) {
-        let serviceToUse = service;
-        let serviceDataToUse = serviceData;
-        if (this.config.keys && key in this.config.keys) {
-            const keyConfig = this.config.keys[key];
-            serviceToUse = keyConfig["service"];
-            serviceDataToUse = keyConfig["data"];
-        }
+        const keyConfig = this.config.keys?.[key];
+        const serviceToUse = keyConfig?.service || service;
+        const serviceDataToUse = keyConfig?.data || serviceData;
         this.hass.callService(
             serviceToUse.split(".")[0],
             serviceToUse.split(".")[1],
@@ -535,7 +522,19 @@ class LgRemoteControl extends LitElement {
         if (!config.entity) {
             throw new Error("Invalid configuration");
         }
-        this.config = config;
+
+        const colorConfig = buildColorConfig(config.colors);
+        const dimensionConfig = buildDimensionConfig(config.dimensions);
+
+        const titleColor = this.config.title_color ? this.config.title_color : "var(--primary-text-color)";
+
+        this.config = {
+            ...config,
+            colors: colorConfig,
+            dimensions: dimensionConfig,
+            remoteWidth: calculateRemoteWidth(dimensionConfig.scale),
+            title_color: titleColor
+        };
     }
 
     sourceButtons() {

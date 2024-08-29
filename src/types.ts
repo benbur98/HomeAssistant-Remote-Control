@@ -1,5 +1,7 @@
 import { HomeAssistant } from "custom-card-helpers";
 
+export type entityId = string;
+
 export interface HomeAssistantFixed extends HomeAssistant {
   entities: { [id: string]: EntityRegistryDisplayEntry };
 }
@@ -7,7 +9,7 @@ export interface HomeAssistantFixed extends HomeAssistant {
 type entityCategory = "config" | "diagnostic";
 
 export interface EntityRegistryDisplayEntry {
-  entity_id: string;
+  entity_id: entityId;
   name?: string;
   device_id?: string;
   area_id?: string;
