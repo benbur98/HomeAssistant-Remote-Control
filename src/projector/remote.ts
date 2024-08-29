@@ -6,6 +6,7 @@ import { buildColorConfig, buildDimensionConfig, calculateRemoteWidth } from '..
 import { directionPad } from '../icons';
 import styles from '../style.css';
 import { addCustomCard, consoleCardDetails } from '../utils';
+import { Button } from './buttons';
 import { ProjectorConfig } from './config';
 import overrideStyles from './style.css';
 
@@ -51,17 +52,17 @@ class ProjectorRemoteControl extends LitElement {
             <div class="grid-container-cursor">
                 ${directionPad()}
 
-                <button class="btn ripple item_1a" @click=${() => this._button(Button.MENU)}><ha-icon icon="mdi:menu"/></button>
-                <button class="btn ripple item_1b" style="background-color: transparent;" @click=${() => this._button("up")}><ha-icon icon="mdi:chevron-up"/></button>
-                <button class="btn ripple item_1c" @click=${() => this._button("source")}><ha-icon icon="mdi:import"/></button>
+                ${this.config.button_entities[Button.MENU] ? html`<button class="btn ripple item_1a" @click=${() => this._button(Button.MENU)}><ha-icon icon="mdi:menu"/></button>` : html`<div class="item_1a"></div>`}
+                <button class="btn ripple item_1b" style="background-color: transparent;" @click=${() => this._button(Button.UP)}><ha-icon icon="mdi:chevron-up"/></button>
+                ${this.config.button_entities[Button.SOURCE] ? html`<button class="btn ripple item_1c" @click=${() => this._button(Button.SOURCE)}><ha-icon icon="mdi:import"/></button>` : html`<div class="item_1c"></div>`}
 
-                <button class="btn ripple item_2a" style="background-color: transparent;" @click=${() => this._button("left")}><ha-icon icon="mdi:chevron-left"/></button>
-                <div class="ok_button ripple item_2b" style="border: solid 2px ${this.config.colors.background}"  @click=${() => this._button("select")}>'OK'</div>
-                <button class="btn ripple item_2c" style="background-color: transparent;" @click=${() => this._button("right")}><ha-icon icon="mdi:chevron-right"/></button>
+                <button class="btn ripple item_2a" style="background-color: transparent;" @click=${() => this._button(Button.LEFT)}><ha-icon icon="mdi:chevron-left"/></button>
+                <div class="ok_button ripple item_2b" style="border: solid 2px ${this.config.colors.background}"  @click=${() => this._button(Button.SELECT)}>'OK'</div>
+                <button class="btn ripple item_2c" style="background-color: transparent;" @click=${() => this._button(Button.RIGHT)}><ha-icon icon="mdi:chevron-right"/></button>
 
-                <button class="btn ripple item_3a" @click=${() => this._button("back")}><ha-icon icon="mdi:undo-variant"/></button>
-                <button class="btn ripple item_3b" style="background-color: transparent;" @click=${() => this._button("down")}><ha-icon icon="mdi:chevron-down"/></button>
-                <button class="btn ripple item_3c" @click=${() => this._button("mute")}><ha-icon icon="mdi:volume-mute"/></button>
+                ${this.config.button_entities[Button.BACK] ? html`<button class="btn ripple item_3a" @click=${() => this._button(Button.BACK)}><ha-icon icon="mdi:undo-variant"/></button>` : html`<div class="item_3a"></div>`}
+                <button class="btn ripple item_3b" style="background-color: transparent;" @click=${() => this._button(Button.DOWN)}><ha-icon icon="mdi:chevron-down"/></button>
+                ${this.config.button_entities[Button.VOLUME_MUTE] ? html`<button class="btn ripple item_3c" @click=${() => this._button(Button.VOLUME_MUTE)}><ha-icon icon="mdi:volume-mute"/></button>` : html`<div class="item_3c"></div>`}
             </div>
         `;
     }
@@ -69,9 +70,9 @@ class ProjectorRemoteControl extends LitElement {
     renderVolumeControl() {
         return html`
             <div class="grid-container-volume-control" >
-                <button class="btn ripple" id="minusButton" style="border-radius: 50% 0px 0px 50%; height: 100%;" @click=${() => this._button("volume_down")}><ha-icon icon="mdi:minus"/></button>
+                <button class="btn ripple" id="minusButton" style="border-radius: 50% 0px 0px 50%; height: 100%;" @click=${() => this._button(Button.VOLUME_DOWN)}><ha-icon icon="mdi:minus"/></button>
                 <button class="btn" style="border-radius: 0px; cursor: default; height: 100%;"><ha-icon icon="mdi:volume-high"/></button>
-                <button class="btn ripple" id="plusButton" style="border-radius: 0px 50% 50% 0px; height: 100%;" @click=${() => this._button("volume_up")}><ha-icon icon="mdi:plus"/></button>
+                <button class="btn ripple" id="plusButton" style="border-radius: 0px 50% 50% 0px; height: 100%;" @click=${() => this._button(Button.VOLUME_UP)}><ha-icon icon="mdi:plus"/></button>
             </div>
         `;
     }
@@ -92,25 +93,16 @@ class ProjectorRemoteControl extends LitElement {
         `;
     }
 
-    _button(button: string) {
-        this.callServiceFromConfig(button, "button.press", {
-            entity_id: this.config.entity,
-            button: button
-        })
+    _button(button: Button) {
+        this.hass.callService("button", "press", {
+            entity_id: this.config.button_entities[button],
+        });
     }
 
-    callServiceFromConfig(key: string, service: string, serviceData: Record<string, any>) {
-        const keyConfig = this.config.keys?.[key];
-        const serviceToUse = keyConfig?.service || service;
-        const serviceDataToUse = keyConfig?.data || serviceData;
-        this.hass.callService(
-            serviceToUse.split(".")[0],
-            serviceToUse.split(".")[1],
-            serviceDataToUse
-        );
-    }
+    setConfig(config: Partial<ProjectorConfig>) {
+        if (!config.button_entities)
+            throw new Error("Please define all Button Entities");
 
-    setConfig(config: any) {
         const colorConfig = buildColorConfig(config.colors);
         const dimensionConfig = buildDimensionConfig(config.dimensions);
 
@@ -119,7 +111,7 @@ class ProjectorRemoteControl extends LitElement {
             colors: colorConfig,
             dimensions: dimensionConfig,
             remoteWidth: calculateRemoteWidth(dimensionConfig.scale)
-        };
+        } as ProjectorConfig;
     }
 
     getCardSize() {

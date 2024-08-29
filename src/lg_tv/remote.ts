@@ -518,15 +518,14 @@ class LgRemoteControl extends LitElement {
         );
     }
 
-    setConfig(config) {
-        if (!config.entity) {
+    setConfig(config: Partial<LgTvConfig>) {
+        if (!config.entity)
             throw new Error("Invalid configuration");
-        }
 
         const colorConfig = buildColorConfig(config.colors);
         const dimensionConfig = buildDimensionConfig(config.dimensions);
 
-        const titleColor = this.config.title_color ? this.config.title_color : "var(--primary-text-color)";
+        const titleColor = config.title_color ? config.title_color : "var(--primary-text-color)";
 
         this.config = {
             ...config,
@@ -534,7 +533,7 @@ class LgRemoteControl extends LitElement {
             dimensions: dimensionConfig,
             remoteWidth: calculateRemoteWidth(dimensionConfig.scale),
             title_color: titleColor
-        };
+        } as LgTvConfig;
     }
 
     sourceButtons() {
